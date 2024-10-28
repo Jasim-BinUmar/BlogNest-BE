@@ -8,13 +8,28 @@ const blogRoutes = require('./routes/blogRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const User = require('./models/User');
 
-dotenv.config();
+//dotenv.config();
 
 const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+
+const allowedOrigins = [
+  process.env.NODE_ENV === 'production' ? 'https://blog-nest-fe.vercel.app' : 'http://localhost:3000'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -55,6 +70,8 @@ async function checkUser() {
 // You can call the checkUser function as needed
 // checkUser();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.NODE_ENV === 'production' ? undefined : process.env.PORT || 5000;
+
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
