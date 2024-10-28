@@ -15,30 +15,17 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-const allowedOrigins = [
-  process.env.NODE_ENV === 'production' ? 'https://blog-nest-fe.vercel.app' : 'http://localhost:3000'
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow common methods
-  credentials: true, // Allow cookies and headers
-}));
-
-// Handle preflight OPTIONS request
-app.options('*', cors({
-  origin: allowedOrigins,
+// CORS Configuration
+const corsOptions = {
+  origin: ['https://blog-nest-fe.vercel.app', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true
-}));
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
 
 
 // Routes
