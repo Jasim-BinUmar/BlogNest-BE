@@ -27,6 +27,14 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+// Security Headers Middleware
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://blog-nest-fe.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', true);
+  next();
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
