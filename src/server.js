@@ -8,7 +8,7 @@ const blogRoutes = require('./routes/blogRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const User = require('./models/User');
 
-//dotenv.config();
+dotenv.config();
 
 const app = express();
 
@@ -17,15 +17,18 @@ app.use(express.json());
 
 // CORS Configuration
 const corsOptions = {
-  origin: ['https://blog-nest-fe.vercel.app', 'http://localhost:3000'],
+  origin: 'https://blog-nest-fe.vercel.app',
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-  preflightContinue: false,
-  optionsSuccessStatus: 204
+  optionsSuccessStatus: 200
 };
 
+// Apply CORS middleware
 app.use(cors(corsOptions));
+
+// Handle OPTIONS preflight
+app.options('*', cors(corsOptions));
 
 // Security Headers Middleware
 app.use((req, res, next) => {
@@ -79,4 +82,4 @@ const PORT = process.env.NODE_ENV === 'production' ? undefined : process.env.POR
 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
+  
